@@ -22,7 +22,9 @@ pipeline {
 
         stage('Run Container') {
             steps {
-                bat 'docker run -d -p 5000:3000 quiz-app'
+                bat 'docker stop quiz-container || exit 0'
+                bat 'docker rm quiz-container || exit 0'
+                bat 'docker run -d -p 5000:3000 --name quiz-container quiz-app'
             }
         }
     }
