@@ -41,15 +41,15 @@ pipeline {
         }
 
         stage('Deploy to AWS EC2') {
-            steps {
-                bat '''
-ssh -o StrictHostKeyChecking=no -i "%PEM_FILE%" ubuntu@%EC2_HOST% ^
-"sudo docker pull %DOCKER_IMAGE% && ^
-sudo docker stop quiz-app || echo stop-failed && ^
-sudo docker rm quiz-app || echo rm-failed && ^
-sudo docker run -d -p 80:3000 --name quiz-app %DOCKER_IMAGE%"
+    steps {
+        bat '''
+ssh -o StrictHostKeyChecking=no -i "C:\\Users\\Public\\quiz.pem" ubuntu@100.53.7.19 ^
+"sudo docker pull yogitaagarwal20076/quiz-app:latest && \
+sudo docker stop quiz-app 2>/dev/null || true && \
+sudo docker rm quiz-app 2>/dev/null || true && \
+sudo docker run -d -p 80:3000 --name quiz-app yogitaagarwal20076/quiz-app:latest"
 '''
-            }
-        }
+    }
+}
     }
 }
