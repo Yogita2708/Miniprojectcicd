@@ -4,10 +4,11 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'yogitaagarwal20076/quiz-app:latest'
         EC2_HOST = '100.53.7.19'
-        PEM_FILE = 'C:\\Users\\Public\\quiz.pem'   // ✅ FIXED PATH
+        PEM_FILE = 'C:\\Users\\Public\\quiz.pem'
     }
 
     stages {
+
         stage('Install Dependencies') {
             steps {
                 bat 'npm install'
@@ -22,8 +23,8 @@ pipeline {
 
         stage('Stop Old Container (Local)') {
             steps {
-                bat 'docker stop quiz-container || exit 0'
-                bat 'docker rm quiz-container || exit 0'
+                bat 'docker stop quiz-container || echo not running'
+                bat 'docker rm quiz-container || echo not exists'
             }
         }
 
@@ -41,13 +42,13 @@ pipeline {
 
         stage('Deploy to AWS EC2') {
             steps {
-                bat """
+                bat '''
 ssh -o StrictHostKeyChecking=no -i "%PEM_FILE%" ubuntu@%EC2_HOST% ^
 "sudo docker pull %DOCKER_IMAGE% && ^
-sudo docker stop quiz-app || true && ^
-sudo docker rm quiz-app || true && ^
+sudo docker stop quiz-app || echo stop-failed && ^
+sudo docker rm quiz-app || echo rm-failed && ^
 sudo docker run -d -p 80:3000 --name quiz-app %DOCKER_IMAGE%"
-"""
+'''
             }
         }
     }
