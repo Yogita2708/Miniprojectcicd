@@ -47,15 +47,11 @@ pipeline {
         }
 
         stage('Deploy to AWS EC2') {
-            steps {
-                bat '''
-                ssh -o StrictHostKeyChecking=no -i %SSH_KEY% ubuntu@%EC2_IP% ^
-                "sudo docker pull %DOCKER_IMAGE% && ^
-                sudo docker stop quiz-app || true && ^
-                sudo docker rm quiz-app || true && ^
-                sudo docker run -d -p 80:3000 --name quiz-app %DOCKER_IMAGE%"
-                '''
-            }
-        }
+    steps {
+        bat """
+        ssh -o StrictHostKeyChecking=no -i "C:\\Users\\Jai Ambey\\Downloads\\quiz.pem" ubuntu@100.53.7.19 "sudo docker pull yogitaagarwal20076/quiz-app:latest && sudo docker stop quiz-app || true && sudo docker rm quiz-app || true && sudo docker run -d -p 80:3000 --name quiz-app yogitaagarwal20076/quiz-app:latest"
+        """
+    }
+}
     }
 }
