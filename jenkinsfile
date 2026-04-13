@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Fetch Code') {
+            steps {
+                echo 'Pulling the latest quiz code from GitHub...'
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Packaging the quiz into a Docker image...'
+                sh 'docker build -t personality-quiz-app .'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Checking if the app is healthy...'
+                // A simple test to see if the file exists
+                sh 'test -f app.js' 
+            }
+        }
+    }
+}
