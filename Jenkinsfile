@@ -2,19 +2,12 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "yogitaagarwal20076/quiz-app:latest"
-        EC2_IP = "100.53.7.19"
-        SSH_KEY = "C:\\Users\\Jai Ambey\\Downloads\\quiz.pem"
+        DOCKER_IMAGE = 'yogitaagarwal20076/quiz-app:latest'
+        EC2_HOST = '100.53.7.19'
+        PEM_FILE = 'C:\\jenkins\\quiz.pem'
     }
 
     stages {
-
-        stage('Clone Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Yogita2708/Miniprojectcicd.git'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 bat 'npm install'
@@ -47,11 +40,11 @@ pipeline {
         }
 
         stage('Deploy to AWS EC2') {
-    steps {
-        bat """
-        ssh -o StrictHostKeyChecking=no -i "C:\\Users\\Jai Ambey\\Downloads\\quiz.pem" ubuntu@100.53.7.19 "sudo docker pull yogitaagarwal20076/quiz-app:latest && sudo docker stop quiz-app || true && sudo docker rm quiz-app || true && sudo docker run -d -p 80:3000 --name quiz-app yogitaagarwal20076/quiz-app:latest"
-        """
-    }
-}
+            steps {
+                bat '''
+ssh -o StrictHostKeyChecking=no -i "%PEM_FILE%" ubuntu@%EC2_HOST% "sudo docker pull %DOCKER_IMAGE% && sudo docker stop quiz-app || true && sudo docker rm quiz-app || true && sudo docker run -d -p 80:3000 --name quiz-app %DOCKER_IMAGE%"
+'''
+            }
+        }
     }
 }
